@@ -1,0 +1,185 @@
+@use '../utils' as *;
+
+/*============= PRICING PLAN CSS AREA ===============*/
+.pricing-plan-section-area {
+    position: relative;
+    z-index: 1;
+    background-image: url(../img/bg/header-bg3.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    .pricing-boxarea {
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        position: relative;
+        z-index: 1;
+        text-align: center; 
+        padding: 28px;
+        margin-bottom: 30px;
+        .ticket-box {
+            p {
+                color: var(--ztc-text-text-1);
+                font-family: var(--ztc-family-font2);
+                font-size: var(--ztc-font-size-font-s18);
+                font-style: normal;
+                font-weight: var(--ztc-weight-semibold);
+                line-height: 18px;
+                text-transform: uppercase;            
+            } 
+            h3 {
+                color: var(--ztc-text-text-1);
+                text-align: center;
+                font-family: var(--ztc-family-font1);
+                font-size: var(--ztc-font-size-font-s44);
+                font-style: normal;
+                font-weight: var(--ztc-weight-semibold);
+                line-height: 44px;
+                text-transform: uppercase;           
+            }     
+            .progress {
+                background-color: #344F57;
+                border-radius: 20px;
+                height: 10px;
+                position: relative;
+            }
+            
+            .progress-inner {
+                background-color: var(--ztc-text-text-6);
+                height: 100%;
+                border-radius: 20px;
+                transition: width 0.4s ease;
+            }
+        }
+    }
+    .pricing-boxarea.box2 {
+        border-radius: 8px;
+        background: var(--ztc-text-text-6);
+        position: relative;
+        z-index: 1;
+        text-align: center; 
+        padding: 28px;
+        margin-bottom: 30px;
+        .ticket-box {
+            p {
+                color: var(--ztc-text-text-2);
+                font-family: var(--ztc-family-font2);
+                font-size: var(--ztc-font-size-font-s18);
+                font-style: normal;
+                font-weight: var(--ztc-weight-semibold);
+                line-height: 18px;
+                text-transform: uppercase;            
+            } 
+            h3 {
+                color: var(--ztc-text-text-2);
+                text-align: center;
+                font-family: var(--ztc-family-font1);
+                font-size: var(--ztc-font-size-font-s44);
+                font-style: normal;
+                font-weight: var(--ztc-weight-semibold);
+                line-height: 44px;
+                text-transform: uppercase;           
+            }     
+            .progress {
+                background-color: #AEDC42;
+                border-radius: 20px;
+                height: 10px;
+                position: relative;
+            }
+            
+            .progress-inner {
+                background-color: var(--ztc-text-text-5);
+                height: 100%;
+                border-radius: 20px;
+                transition: width 0.4s ease;
+            }
+            .btn-area1 {
+                a {
+                    span.demo {
+                        background: var(--ztc-text-text-5);
+                        color: var(--ztc-text-text-1);
+                    }
+                    .arrow {
+                        background: var(--ztc-text-text-5);
+                        color: var(--ztc-text-text-1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Inner Pages //
+.pricing-lan-section-area {
+    position: relative;
+    z-index: 1;
+    .pricing-boxarea {
+        border-radius: 8px;
+        background: #F2F4FF;
+        position: relative;
+        z-index: 1;
+        border-radius: 8px;
+        padding: 28px;
+        margin-bottom: 30px;
+        h5 {
+            color: var(--ztc-text-text-1);
+            font-family: var(--ztc-family-font1);
+            font-size: var(--ztc-font-size-font-s18);
+            font-style: normal;
+            font-weight: var(--ztc-weight-semibold);
+            line-height: 18px; /* 100% */
+            text-transform: capitalize;
+            padding: 8px 10px;
+            display: inline-block;
+            background-image: url(../img/bg/others-bg3.png);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 4px;            
+        }
+        h2 {
+            color: var(--ztc-text-text-2);
+            font-family: var(--ztc-family-font1);
+            font-size: var(--ztc-font-size-font-s44);
+            font-style: normal;
+            font-weight: var(--ztc-weight-semibold);
+            line-height: 44px;
+            text-transform: capitalize;  
+            span {
+                color: var(--ztc-text-text-3);
+                font-family: var(--ztc-family-font1);
+                font-size: var(--ztc-font-size-font-s18);
+                font-style: normal;
+                font-weight: var(--ztc-weight-medium);
+                line-height: 18px;
+                text-transform: capitalize; 
+                display: inline-block;               
+            }          
+        }
+
+        ul {
+            li {
+                color: var(--ztc-text-text-2);
+                font-family: var(--ztc-family-font1);
+                font-size: var(--ztc-font-size-font-s16);
+                font-style: normal;
+                font-weight: var(--ztc-weight-medium);
+                line-height: 16px;
+                text-transform: capitalize;
+                margin-top: 16px;
+                img {
+                    margin: 0 6px 0 0;
+                }                
+            }
+        }
+        .btn-area1 {
+            a {
+                width: 100%;
+                text-align: center;
+                &::after {
+                    left: 100px;
+                }
+            }
+        }
+    }
+}
+/*============= PRICING PLAN CSS AREA ===============*/

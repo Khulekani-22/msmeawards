@@ -1,0 +1,13 @@
+# Secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# Runtime data (rate-limit counters, audit logs) — keep the folder guards
+/storage/*
+!/storage/.htaccess
+!/storage/index.html
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db

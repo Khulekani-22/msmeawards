@@ -1,0 +1,116 @@
+@use '../../utils/' as * ;
+
+/*============= FAQ CSS AREA ===============*/
+// Inner pages //
+.faq-inner-section-area {
+    position: relative;
+    z-index: 1;
+    .faq-widget-area {
+        ul {
+            justify-content: center;
+            background: #F4F4F4;
+            border-radius: 16px;
+            padding: 18px;
+            width: 994px;
+            margin: 0 auto;
+            @media #{$xs} {
+                width: 100%;
+                
+            }
+            @media #{$md} {
+                width: 100%;
+                
+            }
+            li {
+                button{
+                    color: var(--ztc-text-text-2);
+                    text-align: center;
+                    font-family: var(--ztc-family-font1);
+                    font-size: var(--ztc-font-size-font-s18);
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: 18px; /* 100% */ 
+                    display: inline-block;
+                    background: var(--ztc-text-text-1);  
+                    padding: 16px 20px;
+                    border-radius: 4px; 
+                    margin: 0 16px 0 0; 
+                    @media #{$md} {
+                        margin-bottom: 10px;
+                    } 
+                    @media #{$xs} {
+                        margin-bottom: 10px;
+                    } 
+                    &.active {
+                        background: var(--ztc-text-text-4);
+                        transition: all .4s;
+                        color: var(--ztc-text-text-2);
+                    }              
+                }
+            }
+        }
+        .tab-content {
+            .tab-pane {
+                .faq-section-area {
+                    .accordian-area {
+                        .accordion-item {
+                            border: none;
+                            background: var(--ztc-text-text-4);
+                            border-radius: 8px;
+                            padding: 0;
+                            button {
+                                color: var(--ztc-text-text-2);
+                                font-family: var(--ztc-family-font1);
+                                font-size: var(--ztc-font-size-font-s18);
+                                font-style: normal;
+                                font-weight: 700;
+                                line-height: 18px; /* 100% */
+                                letter-spacing: -0.36px;  
+                                border: none;
+                                box-shadow: none;
+                                background: #F4F4F4;
+                                padding: 20px 18px; 
+                                &.accordion-button:not(.collapsed) {
+                                    background: none;
+                                    transition: all .4s;
+                                    &::before {
+                                        background: var(--ztc-text-text-1);
+                                    }
+                                    &::after {
+                                        filter: brightness(0);
+                                    }
+                                }   
+                                &::before {
+                                    height: 28px;
+                                    width: 28px;
+                                    background: var(--ztc-text-text-4);
+                                    transition: all .4s;
+                                    border-radius: 50%;
+                                    content: "";
+                                    position: absolute;
+                                    right: 14px;
+                                } 
+                                &::after {
+                                    z-index: 1;
+                                }      
+                            }
+                            .accordion-body {
+                                padding: 0;
+                                p {
+                                    color: var(--ztc-text-text-3);
+                                    font-family: var(--ztc-family-font1);
+                                    font-size: var(--ztc-font-size-font-s16);
+                                    font-style: normal;
+                                    font-weight: 500;
+                                    line-height: 24px; 
+                                    padding: 0 18px 18px 18px;                             
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+/*============= FAQ CSS AREA ===============*/
