@@ -678,45 +678,18 @@ background: linear-gradient(171deg, rgba(46, 46, 45, 1) 0%, rgba(14, 2, 2, 1) 10
         </div>
       </div>
 
-      <!-- Contact form (stubbed submit) -->
+      <!-- Contact form (React + Axios island — mounted by assets/contact-widget/contact-widget.js) -->
       <div class="col-lg-7">
         <div class="contact-form-card">
-          <form id="contactForm" novalidate>
-            <div class="row g-3">
-              <!-- Honeypot: hidden from humans, tempts bots. Leave empty. -->
-              <div class="d-none" aria-hidden="true">
-                <label for="contactWebsite">Website</label>
-                <input class="form-control" id="contactWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="contactName">Name <span aria-hidden="true">*</span></label>
-                <input class="form-control" id="contactName" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="contactEmail">Email <span aria-hidden="true">*</span></label>
-                <input class="form-control" id="contactEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-              </div>
-              <div class="col-12">
-                <label class="form-label" for="contactSubject">Subject</label>
-                <input class="form-control" id="contactSubject" name="subject" type="text" placeholder="How can we help?">
-              </div>
-              <div class="col-12">
-                <label class="form-label" for="contactMessage">Message <span aria-hidden="true">*</span></label>
-                <textarea class="form-control" id="contactMessage" name="message" rows="5" placeholder="Write your message&hellip;" required></textarea>
-              </div>
-              <div class="col-12">
-                <!-- Cloudflare Turnstile renders here when a site key is set. -->
-                <div id="contactTurnstile" class="contact-turnstile"></div>
-              </div>
-              <div class="col-12 d-flex align-items-center gap-3 flex-wrap">
-                <button class="contact-submit" id="contactSubmit" type="submit">Send Message</button>
-                <p id="contactStatus" class="contact-status" role="status" aria-live="polite" hidden></p>
-              </div>
-              <div class="col-12">
-                <p class="contact-note">We typically respond within 2&ndash;3 business days. Your details are used only to respond to your enquiry.</p>
-              </div>
-            </div>
-          </form>
+          <div id="contact-widget">
+            <!-- Progressive-enhancement fallback shown until the widget mounts. -->
+            <noscript>
+              <p class="contact-status contact-status--error">
+                Please enable JavaScript to use the contact form, or email
+                <a href="mailto:info@msmeawards.org">info@msmeawards.org</a>.
+              </p>
+            </noscript>
+          </div>
         </div>
       </div>
     </div>
@@ -1127,8 +1100,9 @@ background: linear-gradient(171deg, rgba(46, 46, 45, 1) 0%, rgba(14, 2, 2, 1) 10
 	     verification. Leave empty to keep it disabled (honeypot, rate limiting,
 	     CSRF and same-origin checks still protect the form). -->
 	<script>window.CONTACT_TURNSTILE_SITEKEY = "";</script>
-	<!-- Contact form handler: validates, fetches a CSRF token, and sends via api/contact.php -->
-	<script src="assets/js/contact.js"></script>
+	<!-- Contact form: React + Axios island. Talks to the Node serverless API
+	     at /api/contact (see api/contact.js). Build with `npm run build`. -->
+	<script src="assets/contact-widget/contact-widget.js" defer></script>
 </body>
 
 </html>

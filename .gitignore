@@ -1,12 +1,14 @@
-# Secrets — never commit real credentials
+# Secrets — never commit real credentials (use Vercel env vars in production)
 .env
 .env.*
 !.env.example
 
-# Runtime data (rate-limit counters, audit logs) — keep the folder guards
-/storage/*
-!/storage/.htaccess
-!/storage/index.html
+# Node / build
+node_modules/
+dist/
+
+# Vercel
+.vercel/
 
 # OS / editor cruft
 .DS_Store
