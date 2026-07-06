@@ -49,9 +49,19 @@ export function allowedOrigins() {
     'https://msmeawards.org',
     'https://www.msmeawards.org',
   ];
-  // Vercel injects the deployment URL; allow it so previews work.
-  const vercelUrl = env('VERCEL_URL');
-  if (vercelUrl) defaults.push(`https://${vercelUrl}`);
+  // Auto-allow the Vercel-provided URLs so the form works on the production
+  // alias and on preview/branch deployments without manual configuration:
+  //   VERCEL_URL                    -> immutable per-deployment URL
+  //   VERCEL_BRANCH_URL             -> git-branch URL (previews)
+  //   VERCEL_PROJECT_PRODUCTION_URL -> stable production alias
+  for (const key of [
+    'VERCEL_URL',
+    'VERCEL_BRANCH_URL',
+    'VERCEL_PROJECT_PRODUCTION_URL',
+  ]) {
+    const host = env(key);
+    if (host) defaults.push(`https://${host}`);
+  }
 
   const extra = env('ALLOWED_ORIGINS')
     .split(',')
