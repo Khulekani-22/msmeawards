@@ -1,0 +1,9 @@
+# Keep the deployed static output lean when outputDirectory is the repo root.
+# Only exclude things that are NOT needed to serve the site. (Do not exclude
+# src/ or vite.config.js — the Vercel build step needs them.)
+node_modules
+.git
+.vercel
+.env
+.env.*
+!.env.example
