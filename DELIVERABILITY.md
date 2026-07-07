@@ -21,16 +21,46 @@ queue,"* **not** *"delivered to the inbox."*
 
 ## Why messages don't land despite a 200
 
-`msmeawards.org` is an **accepted domain** in the Microsoft 365 tenant. When a
-message arrives **from an external server** (Resend/SES) with
-`From: noreply@msmeawards.org` and is addressed to `info@msmeawards.org` **in the
-same tenant**, Microsoft's **spoof intelligence** treats it as *intra‑org
-spoofing* (the classic "attacker sends as my own domain to my staff" pattern)
-and **Quarantines or Junks it silently** — even though SPF + DKIM + DMARC pass,
-and even though both mailboxes are real. `DMARC p=none` means M365 trusts its own
+**Confirmed (Exchange admin → Mail flow → Accepted domains):**
+`msmeawards.org` is an **Authoritative accepted domain** in the Microsoft 365
+tenant (the shared `22onsloane.co` tenant), with *"Allow mail to be sent from
+this domain"* enabled and *"Accept mail for all subdomains"* **disabled**.
+
+**Confirmed (live MX):** `msmeawards.org` → `msmeawards-org.mail.protection.outlook.com`
+— inbound mail goes **directly to Microsoft 365**. There is **no Mimecast in the
+inbound path**, so a Mimecast allow‑list does **not** affect this mail (see note
+below).
+
+When a message arrives **from an external server** (Resend/SES) with a `From:`
+on `msmeawards.org` — an **authoritative** domain — addressed to a mailbox on
+that **same** domain, Microsoft Defender / EOP **spoof intelligence** treats it
+as *intra‑org spoofing* (the "attacker sends as my own domain to my staff"
+pattern) and **Quarantines or Junks it silently** — even though SPF + DKIM +
+DMARC pass and both mailboxes are real. `DMARC p=none` means M365 trusts its own
 heuristics over DMARC.
 
-This is a **tenant‑policy** issue, not a code or Resend issue.
+### 🔑 Critical consequence: `noreply@` alone does **not** fix this
+
+Because the **whole domain** is authoritative, the spoof engine keys on the
+**domain**, not the mailbox. `noreply@msmeawards.org → info@msmeawards.org` is
+*still* intra‑org spoofing — changing `info@` to `noreply@` only avoids the
+literal same‑mailbox case; it does **not** clear the spoof classification. To
+actually fix inbox delivery you must do **one** of:
+
+- **Path A — send from a *subdomain*** that is **not** an accepted domain (e.g.
+  `noreply@send.msmeawards.org`). Because *"Accept mail for all subdomains"* is
+  **off**, a subdomain is treated as a normal external sender, **not** spoofing.
+  ✅ *Recommended — no tenant‑policy change, spoof‑proof, survives policy resets.*
+- **Path B — explicitly allow the spoof in Microsoft 365** (Tenant Allow/Block
+  List, or a DKIM‑scoped transport rule). Must be done in **M365**, not Mimecast.
+
+> **About the Mimecast allow‑list you added:** the live MX for `msmeawards.org`
+> points at `*.mail.protection.outlook.com`, i.e. **Microsoft 365 receives this
+> mail directly**. Unless a Mimecast inbound connector is in front of EOP for
+> this specific domain, that allow‑list has **no effect** on the contact‑form
+> mail. The filter to change is **Microsoft Defender / EOP**, not Mimecast.
+
+This is a **tenant‑policy / sender‑domain** issue, not a code or Resend issue.
 
 ## ⚠️ If the Resend log still shows `from: info@msmeawards.org`
 
@@ -169,6 +199,35 @@ Create a new rule**
 
 ---
 
+## ✅ Path A (RECOMMENDED) — send from a sending subdomain
+
+This is the cleanest, most durable fix. Because `send.msmeawards.org` is **not**
+an accepted domain in the tenant (and *"Accept mail for all subdomains"* is
+**off**), Microsoft treats it as an ordinary external sender — so the intra‑org
+spoof classification never applies. No tenant‑policy change; can't be undone by a
+future policy reset; unaffected by the Mimecast/M365 routing question.
+
+1. **Resend → Domains → Add Domain:** `send.msmeawards.org`.
+2. Publish the DNS records Resend shows for the subdomain (in the DNS zone for
+   `msmeawards.org`):
+   - **DKIM** — `resend._domainkey.send` (CNAME/TXT as Resend specifies)
+   - **SPF/MX** for the subdomain (e.g. `send TXT "v=spf1 include:amazonses.com ~all"`)
+   - the Return‑Path/`_dmarc.send` records if Resend lists them
+   Wait for **Verified**.
+3. **Vercel → Project → Settings → Environment Variables** (all environments):
+   ```
+   RESEND_FROM_EMAIL = noreply@send.msmeawards.org
+   RESEND_FROM_NAME  = Presidential MSME Awards
+   CONTACT_TO_EMAIL  = info@msmeawards.org
+   ```
+   **Redeploy** so the functions pick up the new values.
+4. Submit the live form. `info@` receives it in the **inbox**; staff **Reply**
+   still goes to the visitor (the API sets `Reply-To`).
+
+No code change is required — the sender is fully env‑driven.
+
+---
+
 ## Verify the fix
 
 1. Submit the live contact form (or use Resend → *Emails* → send a test from
@@ -193,11 +252,3 @@ propagate across the tenant.
 - **Resend webhooks:** add a webhook (Resend → *Webhooks*) for
   `email.delivered` / `email.bounced` / `email.complained` so the **true**
   delivery status is captured, instead of relying on the `200` queue ack.
-
-## Alternative — Path A (sending subdomain), for reference
-
-If tenant‑policy changes are undesirable, send from a subdomain that is **not**
-an accepted domain in M365 (e.g. `noreply@send.msmeawards.org`): add
-`send.msmeawards.org` in Resend, publish its DKIM/SPF, then set
-`RESEND_FROM_EMAIL=noreply@send.msmeawards.org` in Vercel. No code change and no
-tenant policy change required. (Not needed if Path B is used.)
