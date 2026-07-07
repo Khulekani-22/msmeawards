@@ -200,7 +200,16 @@ export default async function handler(req, res) {
     text,
   };
   // Let staff reply straight to the visitor. Only include when well-formed.
-  const replyTo = safeReplyTo(name, email);
+  //
+  // Some inbound filters (Mimecast / M365 impersonation protection) score a
+  // From-vs-Reply-To *domain mismatch* as a phishing signal — e.g. From on
+  // msmeawards.org but Reply-To on the visitor's external domain. That is
+  // normal for contact forms, but if messages are being held/quarantined you
+  // can set CONTACT_DISABLE_REPLY_TO=1 (in Vercel) to omit Reply-To and confirm
+  // whether it is the trigger — no code change or redeploy of code required.
+  // Staff can still see and copy the visitor's address from the email body.
+  const disableReplyTo = /^(1|true|yes|on)$/i.test(env('CONTACT_DISABLE_REPLY_TO', ''));
+  const replyTo = disableReplyTo ? '' : safeReplyTo(name, email);
   if (replyTo) payload.reply_to = replyTo;
 
   try {
@@ -220,10 +229,11 @@ export default async function handler(req, res) {
       // NB: a Resend id means "queued/accepted", not "delivered". Check the
       // Resend > Emails tab (or a webhook) for the true delivery status.
       console.log(
-        '[contact] queued via Resend id=%s from=%s to=%s',
+        '[contact] queued via Resend id=%s from=%s to=%s replyTo=%s',
         result.id,
         fromEmail,
-        toEmail
+        toEmail,
+        replyTo || '(none)'
       );
       return sendJson(res, 200, { ok: true, id: result.id });
     }
