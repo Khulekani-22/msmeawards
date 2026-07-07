@@ -56,6 +56,7 @@ export default async function handler(req, res) {
   /* Credentials ----------------------------------------------------------- */
   const apiKey = resendApiKey();
   const fromEmail = env('RESEND_FROM_EMAIL');
+  const fromName = env('RESEND_FROM_NAME', 'Presidential MSME Awards');
   const toEmail = env('CONTACT_TO_EMAIL') || fromEmail;
   if (!apiKey || !fromEmail) {
     return sendJson(res, 500, {
@@ -63,6 +64,33 @@ export default async function handler(req, res) {
       error: 'Email service is not configured. Please try again later.',
     });
   }
+
+  // Deliverability guard: sending FROM and TO the same mailbox (e.g.
+  // info@msmeawards.org -> info@msmeawards.org) is a very common reason a
+  // message is accepted by Resend (HTTP 200) yet never lands in the inbox.
+  //
+  // msmeawards.org is hosted on Microsoft 365 (Exchange Online). When mail
+  // arrives from an EXTERNAL server (Resend/Amazon SES) with a From address on
+  // one of the tenant's own accepted domains and is addressed to a mailbox in
+  // that same tenant, Microsoft's spoof intelligence treats it as intra-org
+  // spoofing and often Quarantines/Junks it even when SPF+DKIM+DMARC pass.
+  // Prefer a dedicated sender on a subdomain that is NOT an accepted domain in
+  // M365 (e.g. no-reply@send.msmeawards.org) and keep the visitor as reply_to.
+  if (fromEmail.toLowerCase() === toEmail.toLowerCase()) {
+    console.warn(
+      '[contact] RESEND_FROM_EMAIL === CONTACT_TO_EMAIL (%s). Sending from and ' +
+        'to the same mailbox frequently causes silent non-delivery/spam ' +
+        'filtering. Set RESEND_FROM_EMAIL to a distinct sender (ideally on a ' +
+        'verified sending subdomain, e.g. no-reply@send.msmeawards.org).',
+      toEmail
+    );
+  }
+
+  // Use RESEND_FROM_EMAIL verbatim if it already carries a display name or
+  // angle brackets; otherwise wrap the bare address with the friendly name.
+  const fromHeader = /[<>]/.test(fromEmail)
+    ? fromEmail
+    : `${sanitizeHeaderLine(fromName)} <${fromEmail}>`;
 
   /* Parse payload --------------------------------------------------------- */
   const data = await readJsonBody(req);
@@ -164,17 +192,21 @@ export default async function handler(req, res) {
     `Message:\n${message}\n`;
 
   /* Send via Resend ------------------------------------------------------- */
+  const payload = {
+    from: fromHeader,
+    to: [toEmail],
+    subject: emailSubject,
+    html,
+    text,
+  };
+  // Let staff reply straight to the visitor. Only include when well-formed.
+  const replyTo = safeReplyTo(name, email);
+  if (replyTo) payload.reply_to = replyTo;
+
   try {
     const { data: result } = await axios.post(
       'https://api.resend.com/emails',
-      {
-        from: `Presidential MSME Awards <${fromEmail}>`,
-        to: [toEmail],
-        subject: emailSubject,
-        html,
-        text,
-        reply_to: safeReplyTo(name, email),
-      },
+      payload,
       {
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -185,8 +217,17 @@ export default async function handler(req, res) {
     );
 
     if (result?.id) {
+      // NB: a Resend id means "queued/accepted", not "delivered". Check the
+      // Resend > Emails tab (or a webhook) for the true delivery status.
+      console.log(
+        '[contact] queued via Resend id=%s from=%s to=%s',
+        result.id,
+        fromEmail,
+        toEmail
+      );
       return sendJson(res, 200, { ok: true, id: result.id });
     }
+    console.error('[contact] Resend returned no id', result);
     return sendJson(res, 502, {
       ok: false,
       error: 'Sorry, your message could not be sent right now. Please try again later.',
