@@ -10,6 +10,18 @@
       "maxDuration": 15
     }
   },
+  "redirects": [
+    {
+      "source": "/preview-2",
+      "destination": "https://preview.msmeawards.org/",
+      "permanent": false
+    },
+    {
+      "source": "/preview-2/:path*",
+      "destination": "https://preview.msmeawards.org/:path*",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -25,7 +37,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://api.resend.com; frame-src https://challenges.cloudflare.com"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.googletagmanager.com; connect-src 'self' https://challenges.cloudflare.com https://api.resend.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://challenges.cloudflare.com"
         }
       ]
     },
