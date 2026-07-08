@@ -163,33 +163,41 @@ export default async function handler(req, res) {
   const safeEmail = escapeHtml(email);
   const safeSubject = escapeHtml(subject || 'No subject');
   const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
-  const emailSubject =
-    'New contact message: ' + sanitizeHeaderLine(subject || 'Website enquiry');
+  // Fixed, generic subject with NO user-supplied content. Putting the
+  // visitor's subject or name into the email Subject (or From) is exactly what
+  // trips Mimecast / M365 executive-impersonation and keyword filters. Their
+  // subject is preserved inside the body instead. Keep this constant.
+  const emailSubject = 'New email from website contact form';
 
   const html = `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#211d1d;">
   <div style="background:linear-gradient(171deg,#232321 0%,#0e0202 100%);color:#f4f2ed;padding:20px 24px;border-radius:12px 12px 0 0;">
-    <h2 style="margin:0;font-size:18px;">Presidential MSME Awards &mdash; Contact Form</h2>
+    <h2 style="margin:0;font-size:18px;">Presidential MSME Awards &mdash; Website Contact Form</h2>
   </div>
   <div style="border:1px solid #ececec;border-top:0;border-radius:0 0 12px 12px;padding:24px;">
+    <p style="margin:0 0 16px;font-size:14px;">Dear Presidential MSME Awards Team,</p>
+    <p style="margin:0 0 16px;font-size:14px;line-height:1.7;">A new enquiry has been submitted through the website contact form. The details are below.</p>
     <table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <tr><td style="padding:6px 0;color:#8a827a;width:90px;">Name</td><td style="padding:6px 0;font-weight:600;">${safeName}</td></tr>
-      <tr><td style="padding:6px 0;color:#8a827a;">Email</td><td style="padding:6px 0;font-weight:600;"><a href="mailto:${safeEmail}" style="color:#c08a3e;">${safeEmail}</a></td></tr>
-      <tr><td style="padding:6px 0;color:#8a827a;">Subject</td><td style="padding:6px 0;font-weight:600;">${safeSubject}</td></tr>
+      <tr><td style="padding:6px 0;color:#8a827a;width:90px;vertical-align:top;">Name</td><td style="padding:6px 0;font-weight:600;">${safeName}</td></tr>
+      <tr><td style="padding:6px 0;color:#8a827a;vertical-align:top;">Email</td><td style="padding:6px 0;font-weight:600;">${safeEmail}</td></tr>
+      <tr><td style="padding:6px 0;color:#8a827a;vertical-align:top;">Subject</td><td style="padding:6px 0;font-weight:600;">${safeSubject}</td></tr>
     </table>
     <hr style="border:0;border-top:1px solid #ececec;margin:16px 0;">
     <p style="margin:0 0 8px;color:#8a827a;font-size:13px;">Message</p>
     <div style="font-size:14px;line-height:1.7;">${safeMessage}</div>
   </div>
-  <p style="text-align:center;color:#9a938c;font-size:12px;margin:16px 0 0;">Sent from the msmeawards.org contact form</p>
+  <p style="text-align:center;color:#9a938c;font-size:12px;margin:16px 0 0;">Automatic message from msmeawards website contact form</p>
 </div>`.trim();
 
   const text =
-    `New contact message\n\n` +
+    `Dear Presidential MSME Awards Team,\n\n` +
+    `A new enquiry has been submitted through the website contact form. ` +
+    `The details are below.\n\n` +
     `Name: ${name}\n` +
     `Email: ${email}\n` +
     `Subject: ${subject || 'No subject'}\n\n` +
-    `Message:\n${message}\n`;
+    `Message:\n${message}\n\n` +
+    `Automatic message from msmeawards website contact form\n`;
 
   /* Send via Resend ------------------------------------------------------- */
   const payload = {
