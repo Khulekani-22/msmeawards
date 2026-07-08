@@ -86,22 +86,6 @@ for a Globally Competitive South Africa">
 			</div>
 		</div>
 		<!--===== PAGE PROGRESS END=======-->
-		<div id="top-banner" class="row border-1 border-bottom border-warning glass-nav">
-			<div class="col-12">
-				<div class="container">
-					<p class="text-end m-0 p-2">
-					<a target="_blank" href="https://app.msmeawards.org/login" class="apply-cta">Apply Now &#8594;</a>
-					</p>
-				</div>
-				
-			</div>
-		</div>
-
-		<style>
-			.border-bottom {
-				border-bottom: 1px solid rgba(255, 193, 7, 0.5) !important;
-			}
-		</style>
 
 		<!--=====HEADER START=======-->
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark glass-nav">
@@ -149,8 +133,9 @@ for a Globally Competitive South Africa">
 				</ul>
 			  </div>
 
-			  <!-- Right: Two partner logos (hidden on small screens) -->
+			  <!-- Right: Apply CTA + partner logos (hidden on small screens) -->
 			  <div class="d-none d-lg-flex align-items-center gap-3">
+				<a target="_blank" href="https://app.msmeawards.org/login" class="apply-cta">Apply Now &#8594;</a>
 				<a href="#" class="text-decoration-none mx-3">
 				  <img  class="d-none" width="160rem" src="images/whiteLogo-BzWgUTfp.png" alt="SU20 logo"  loading="lazy">
 				</a>
@@ -310,16 +295,8 @@ background: linear-gradient(171deg, rgba(46, 46, 45, 1) 0%, rgba(14, 2, 2, 1) 10
             footer.bg-msme a:hover{ color: var(--honey-400) !important; }
             footer.bg-msme hr{ border-top: 1px solid rgba(255,255,255,.2); }
 
-            /* Top banner visibility + navbar offset */
-            #top-banner{
-              position: fixed; top: 0; left: 0; right: 0;
-              z-index: 1041; /* above navbar (bootstrap nav ~1030) */
-              transform: translateY(0);
-              transition: transform .2s ease, opacity .2s ease;
-              opacity: 1;
-            }
-            #top-banner.hidden{ transform: translateY(-100%); opacity: 0; pointer-events: none; }
-            .navbar.fixed-top{ top: var(--banner-offset, 0px); transition: top .2s ease; }
+            /* Navbar pinned to very top (top banner removed) */
+            .navbar.fixed-top{ top: 0; }
 
             /* Force responsive left margin on hero content area */
             @media (max-width: 575.98px) { /* < sm */
@@ -1176,22 +1153,6 @@ Emphasising localisation as a strategic driver of economic transformation by pro
     }
     </style>
 
-    <script>
-    // Top banner show at top, hide on scroll; offset navbar
-    (function(){
-      const banner = document.getElementById('top-banner');
-      const root = document.body;
-      function setOffset(){
-        const atTop = window.scrollY <= 0;
-        if (banner){ banner.classList.toggle('hidden', !atTop); }
-        const h = (atTop && banner) ? banner.offsetHeight : 0;
-        if (root){ root.style.setProperty('--banner-offset', h + 'px'); }
-      }
-      ['scroll','resize'].forEach(evt => window.addEventListener(evt, setOffset, { passive: true }));
-      window.addEventListener('load', setOffset);
-      document.addEventListener('DOMContentLoaded', setOffset);
-    })();
-    </script>
     <script>
     // Auto-apply reveal animations to common elements with staggered delays
     (function(){
