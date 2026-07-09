@@ -283,7 +283,11 @@
 		<div class="container">
 			<span class="cs-badge"><span class="dot"></span> Applications Opening Soon</span>
 			<h1>Presidential MSME Awards <span class="accent">2026</span></h1>
-			<p class="lead">Championing Resilience, Innovation &amp; Sustainable Growth. Applications open on
+			<p class="lead">Championing
+Local Excellence
+for a Globally
+Competitive South
+Africa. Applications open on
 				<span class="cs-date">10 July 2026</span> across ten award categories &mdash; get ready to enter.</p>
 
 			<!-- Countdown -->
@@ -297,7 +301,8 @@
 			<!-- Revealed when the countdown reaches zero -->
 			<div id="cd-open" hidden>
 				<p class="lead mb-2" style="color:var(--honey-400);font-weight:700;">Applications are now open!</p>
-				<a target="_blank" href="coming-soon.html" class="apply-cta">Apply Now &#8594;</a>
+				<a href="https://app.msmeawards.org/" class="apply-cta">Apply Now &#8594;</a>
+				<p class="mt-3 mb-0" style="color:rgba(247,246,242,.7);font-size:.85rem;">Taking you to the application portal&hellip;</p>
 			</div>
 
 			<div class="cs-actions">
@@ -496,13 +501,26 @@
 	(function(){
 	  // Target: 10 July 2026, 00:00 South African Standard Time (UTC+2)
 	  var target = new Date('2026-07-10T00:00:00+02:00').getTime();
+
+	  // Live application portal — where every "Apply" button ultimately leads.
+	  var APPLY_URL = 'https://app.msmeawards.org/';
+
+	  // Gateway: every "Apply" button across the site points at this page while
+	  // applications are closed. The moment the target date passes we forward
+	  // straight through to the portal, so the real Apply URL is auto-restored
+	  // everywhere on 10 July with no per-page edits.
+	  if (Date.now() >= target){
+	    window.location.replace(APPLY_URL);
+	    return;
+	  }
+
 	  var elDays  = document.getElementById('cd-days');
 	  var elHours = document.getElementById('cd-hours');
 	  var elMins  = document.getElementById('cd-mins');
 	  var elSecs  = document.getElementById('cd-secs');
 	  var cd      = document.getElementById('countdown');
 	  var open    = document.getElementById('cd-open');
-	  var timer;
+	  var timer, redirected = false;
 
 	  function pad(n){ return String(n).padStart(2, '0'); }
 
@@ -512,6 +530,12 @@
 	      if (cd)   cd.hidden = true;
 	      if (open) open.hidden = false;
 	      if (timer) clearInterval(timer);
+	      // Countdown elapsed while the tab was open: show the "open" state
+	      // briefly, then forward to the live portal.
+	      if (!redirected){
+	        redirected = true;
+	        setTimeout(function(){ window.location.replace(APPLY_URL); }, 1600);
+	      }
 	      return;
 	    }
 	    var d = Math.floor(diff / 86400000); diff -= d * 86400000;
