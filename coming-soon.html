@@ -573,7 +573,11 @@ Africa. Applications open on
 	<script src="assets/js/vendor/circle-progress.js"></script>
 	<script src="assets/js/main.js"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- NOTE: Bootstrap 5 JS is already loaded above via assets/js/vendor/bootstrap.min.js
+	     (which is the full bundle, Popper included). Do NOT also load the CDN
+	     bootstrap.bundle here: loading Bootstrap twice double-binds the dropdown
+	     toggle, so the click opens then immediately closes it and the Categories
+	     menu appears not to open. The CDN Bootstrap/Icons CSS in <head> is fine. -->
 </body>
 
 </html>
