@@ -73,22 +73,6 @@
 		</div>
 		<!--===== PAGE PROGRESS END=======-->
 
-		<div id="top-banner" class="row border-1 border-bottom border-warning glass-nav">
-			<div class="col-12">
-				<div class="container">
-					<p class="text-end m-0 p-2">
-					<a target="_blank" href="coming-soon.html" class="apply-cta">Apply Now &#8594;</a>
-					</p>
-				</div>
-			</div>
-		</div>
-
-		<style>
-			.border-bottom {
-				border-bottom: 1px solid rgba(255, 193, 7, 0.5) !important;
-			}
-		</style>
-
 		<!--=====HEADER START=======-->
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark glass-nav">
 			<div class="container d-flex align-items-center justify-content-between">
@@ -135,8 +119,9 @@
 				</ul>
 			  </div>
 
-			  <!-- Right: Two partner logos (hidden on small screens) -->
+			  <!-- Right: Apply CTA + partner logos (hidden on small screens) -->
 			  <div class="d-none d-lg-flex align-items-center gap-3">
+				<a target="_blank" href="coming-soon.html" class="apply-cta">Apply Now &#8594;</a>
 				<a href="#" class="text-decoration-none mx-3">
 				  <img class="d-none" width="160rem" src="images/whiteLogo-BzWgUTfp.png" alt="SU20 logo" loading="lazy">
 				</a>
@@ -262,15 +247,7 @@
             footer.bg-msme, footer.bg-msme .h5, footer.bg-msme a{ color: var(--cream) !important; }
             footer.bg-msme a:hover{ color: var(--honey-400) !important; }
             footer.bg-msme hr{ border-top: 1px solid rgba(255,255,255,.2); }
-            #top-banner{
-              position: fixed; top: 0; left: 0; right: 0;
-              z-index: 1041;
-              transform: translateY(0);
-              transition: transform .2s ease, opacity .2s ease;
-              opacity: 1;
-            }
-            #top-banner.hidden{ transform: translateY(-100%); opacity: 0; pointer-events: none; }
-            .navbar.fixed-top{ top: var(--banner-offset, 0px); transition: top .2s ease; }
+            .navbar.fixed-top{ top: 0; }
             @media (max-width: 575.98px) {
               .content-area.aniamtion-key-1 { margin-left: 0 !important; }
             }
@@ -799,21 +776,6 @@
     }
     </style>
 
-    <script>
-    (function(){
-      const banner = document.getElementById('top-banner');
-      const root = document.body;
-      function setOffset(){
-        const atTop = window.scrollY <= 0;
-        if (banner){ banner.classList.toggle('hidden', !atTop); }
-        const h = (atTop && banner) ? banner.offsetHeight : 0;
-        if (root){ root.style.setProperty('--banner-offset', h + 'px'); }
-      }
-      ['scroll','resize'].forEach(evt => window.addEventListener(evt, setOffset, { passive: true }));
-      window.addEventListener('load', setOffset);
-      document.addEventListener('DOMContentLoaded', setOffset);
-    })();
-    </script>
     <script>
     (function(){
         const io = new IntersectionObserver((entries, obs) => {
