@@ -165,8 +165,13 @@
       <a href="#" class="text-decoration-none">
         <img class="d-none" width="65rem" src="images/gov-20-logo-white.png" alt="G20 logo" loading="lazy">
       </a>
-      
-      </div>
+                          <a href="https://www.sedfa.org.za/" target="_blank" rel="noopener" class="d-inline-flex align-items-center">
+                            <img src="sedfa-logo-03.png" alt="SEDFA logo" style="height:44px;width:auto;" loading="lazy">
+                          </a>
+                          <a href="https://www.dsbd.gov.za/" target="_blank" rel="noopener" class="d-inline-flex align-items-center">
+                            <img src="dsbd-logo-03.png" alt="Department of Small Business Development logo" style="height:44px;width:auto;" loading="lazy">
+                          </a>
+                        </div>
     </div>
     </nav>
 
@@ -1330,7 +1335,11 @@ background: linear-gradient(171deg, rgba(46, 46, 45, 1) 0%, rgba(14, 2, 2, 1) 10
 	<script src="assets/js/vendor/circle-progress.js"></script>
 	<script src="assets/js/main.js"></script>
 
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- NOTE: Bootstrap 5 JS is already loaded above via assets/js/vendor/bootstrap.min.js
+	     (which is the full bundle, Popper included). Do NOT also load the CDN
+	     bootstrap.bundle here: loading Bootstrap twice double-binds the dropdown
+	     toggle, so the click opens then immediately closes it and the Categories
+	     menu appears not to open. -->
 </body>
 
 </html>
